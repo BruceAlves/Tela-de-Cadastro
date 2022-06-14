@@ -20,8 +20,10 @@ namespace tela_de_Cadastro
 
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
+            this.Hide();
             Form2 form2 = new Form2();
             form2.ShowDialog();
+            
         }
 
         private void btnCadastrar_Click(object sender, EventArgs e)
@@ -41,6 +43,27 @@ namespace tela_de_Cadastro
                 comandoInsert = $@"
                 Insert into cadastros(nome, email, senha)
                 values('{nome}', '{email}', '{senha}');";
+
+
+                try
+                {
+                    conexaoMysql.Open();
+                    MySqlCommand executorComando = new MySqlCommand(comandoInsert, conexaoMysql);
+                    executorComando.ExecuteNonQuery();
+
+                    MessageBox.Show($"O Usuario {nome} foi Inserido com sucesso", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    LimparCampo();
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro Banco de Dados", $"Erro:\n{ex.Message}", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    conexaoMysql.Close();
+                }
             }
             else
             {
@@ -48,25 +71,6 @@ namespace tela_de_Cadastro
             }
             
 
-            try
-            {
-                conexaoMysql.Open();
-                MySqlCommand executorComando = new MySqlCommand(comandoInsert, conexaoMysql);
-                executorComando.ExecuteNonQuery();
-
-                MessageBox.Show($"O Usuario {nome} foi Inserido com sucesso", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                LimparCampo();
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro Banco de Dados", $"Erro:\n{ex.Message}", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                conexaoMysql.Close();
-            }
         }
 
 
